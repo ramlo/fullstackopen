@@ -6,7 +6,6 @@ const ShowCountries = ({countries, setFilter}) =>{
     if (countries.length === 1){
       return (
         <div>
-          {console.log('showOnly 1')}
           {countries.map( country => 
               <ShowCountryDetails country={country} key={country.name} />
             )

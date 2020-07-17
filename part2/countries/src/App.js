@@ -8,7 +8,6 @@ const App = () =>{
     const [showAll, setShowAll] = useState(true)
     
     const hookGetCities = () => {
-      console.log('hooked')
       axios
         .get('https://restcountries.eu/rest/v2/all')
         .then(response =>{
@@ -23,7 +22,6 @@ const App = () =>{
       )
     
     const filterCountries = (event)=>{
-      console.log('Setting filter: ',event.target.value)
       setFilter(event.target.value)
       setShowAll(false)
     }
