@@ -3,6 +3,7 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import personsService from './services/persons'
+import ShowMessage from './components/ShowMessage'
 
 const App = () => {
 
@@ -22,7 +23,9 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
   const [ showAll, setShowAll ] = useState(true)
-
+  const [ message, setMessage ] = useState(null)
+  const [ error, setError ] = useState(false)
+  
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
@@ -47,18 +50,40 @@ const App = () => {
         if(confirm){
           const updatedPerson=personsService.update(personAlreadyExist.id, {name:newName, number:newNumber})
           updatedPerson.then( response =>
-            setPersons(persons.map(
+            {
+              setPersons(persons.map(
                 p => p.id  !== response.id ? p : response 
                 )
-            )
-          )
+              )
+              setMessage(`Number Changed ${response.name} `)
+              
+              setTimeout(()=>{
+                setMessage(null)
+              },3000)
+          })
+          .catch(error => {
+            setMessage(`Information of ${newName} has already been removed from server`)
+            setError(true)
+            setPersons(persons.filter(p => p.id !== personAlreadyExist.id))
+
+            setTimeout(()=>{
+              setMessage(null)
+              setError(false)
+            },3000)
+          })
         }
 
       }else{
         let newPerson= {name:newName, number:newNumber}
         personsService.save(newPerson).then (person =>{
           setPersons(persons.concat(person))
-        })
+          
+          setMessage(`Added ${person.name} `)
+          
+          setTimeout(()=>{
+            setMessage(null)
+          },3000)
+        })        
       }
       
       setNewName('')
@@ -88,6 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <ShowMessage message={message} error={error}/>
         <Filter filter={filter} 
           filterPersons={filterPersons} />
       
