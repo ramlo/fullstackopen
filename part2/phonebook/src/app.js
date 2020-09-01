@@ -33,7 +33,6 @@ const App = () => {
   const addPerson = (event)=>{
     event.preventDefault();
     const valuesCompleted = newName && newNumber
-    
     if(valuesCompleted){
     
       const personAlreadyExist = persons.find(
@@ -62,14 +61,20 @@ const App = () => {
               },3000)
           })
           .catch(error => {
-            setMessage(`Information of ${newName} has already been removed from server`)
-            setError(true)
-            setPersons(persons.filter(p => p.id !== personAlreadyExist.id))
+            if(error.response.statusText === 'Bad Request'){
+              setMessage(error.response.data.error)
+              setError(true)
+            }else{
+              setMessage(`Information of ${newName} has already been removed from server`)
+              setError(true)
+              setPersons(persons.filter(p => p.id !== personAlreadyExist.id))
+
+            }
 
             setTimeout(()=>{
               setMessage(null)
               setError(false)
-            },3000)
+            },5000)
           })
         }
 
@@ -83,6 +88,15 @@ const App = () => {
           setTimeout(()=>{
             setMessage(null)
           },3000)
+        })
+        .catch(err =>{
+          setMessage(err.response.data.error)
+          setError(true)
+          
+          setTimeout(()=>{
+            setMessage(null)
+            setError(false)
+          },5000)
         })        
       }
       

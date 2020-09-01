@@ -2,7 +2,7 @@ import React from 'react'
 
 const Persons = ({persons, deletePerson}) =>{
     return (
-        <div>
+        <React.Fragment>
         {persons.map(person =>{
             return(
                 <div key={person.id}>
@@ -11,7 +11,7 @@ const Persons = ({persons, deletePerson}) =>{
                 </div>)
         })
         }
-        </div>
+        </React.Fragment>
     )
 }
 
